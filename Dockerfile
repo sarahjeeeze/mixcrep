@@ -10,7 +10,13 @@ RUN apt-get update -y && apt-get install -y \
     build-essential \
     openjdk-8-jre \
     wget \
-    unzip
+    unzip \
+    python3 \
+    vim \
+    python3-pip 
+
+RUN pip3 install pandas
+
 
 
 # set inital WORKDIR

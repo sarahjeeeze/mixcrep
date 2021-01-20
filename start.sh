@@ -81,12 +81,12 @@ cd /mixcrep
 
 
 #change to use the receptor
-./repseqio/repseqio fromPaddedFasta -t 39442 -c $RECEPTOR --name-index 1 -g D --gene-feature DRegion /$GERMLINE_BUILD_DIR/$RECEPTOR/d.fasta ighd.fasta ighd.d.json
-./repseqio/repseqio fromPaddedFasta -t 39442 -c $RECEPTOR --name-index 1 -g J --gene-feature JRegion /$GERMLINE_BUILD_DIR/$RECEPTOR/j.fasta ighj.fasta ighj.j.json
-./repseqio/repseqio fromPaddedFasta -t 39442 -c $RECEPTOR --name-index 1 -g V --gene-feature VRegion /$GERMLINE_BUILD_DIR/$RECEPTOR/v.fasta ighv.fasta ighv.v.json
+./repseqio-1.3.4/repseqio fromPaddedFasta -t 39442 -c $RECEPTOR --name-index 1 -g D --gene-feature DRegion /$GERMLINE_BUILD_DIR/$RECEPTOR/d.fasta ighd.fasta ighd.d.json
+./repseqio-1.3.4/repseqio fromPaddedFasta -t 39442 -c $RECEPTOR --name-index 1 -g J --gene-feature JRegion /$GERMLINE_BUILD_DIR/$RECEPTOR/j.fasta ighj.fasta ighj.j.json
+./repseqio-1.3.4/repseqio fromPaddedFasta -t 39442 -c $RECEPTOR --name-index 1 -g V --gene-feature VRegion /$GERMLINE_BUILD_DIR/$RECEPTOR/v.fasta ighv.fasta ighv.v.json
 
-./repseqio/repseqio merge ighd.d.json ighj.j.json ighv.v.json lib2.json -f
-./repseqio/repseqio inferPoints -g VRegion -g JRegion -g DRegion -f lib2.json lib2.json
+./repseqio-1.3.4/repseqio merge ighd.d.json ighj.j.json ighv.v.json lib2.json -f
+./repseqio-1.3.4/repseqio inferPoints -g VRegion -g JRegion -g DRegion -f lib2.json lib2.json
 
 cp /mixcrep/${RECEPTOR}d.fasta /mixcrep/mixcr-3.0.13/libraries
 cp /mixcrep/${RECEPTOR}v.fasta /mixcrep/mixcr-3.0.13/libraries
@@ -95,12 +95,16 @@ cp /mixcrep/${RECEPTOR}j.fasta /mixcrep/mixcr-3.0.13/libraries
 
 cp /mixcrep/lib2.json /mixcrep/mixcr-3.0.13/libraries
 
-#mixcr alignemn
+#mixcr alignment
 cd /mixcrep/mixcr-3.0.13
-#change this input to the volume once mounted
+#need to update to do for all files in INPUT folder
 mixcr align -f --write-all --library lib2 --species 39442 -O saveOriginalReads=true /../../INPUT/sample.fasta output.vdjca 
 
 mixcr exportAlignments -descrsR1 -vHit -dHit -jHit -aaFeature CDR3 output.vdjca output.tsv -f
 
 cp /mixcrep/mixcr-3.0.13/output.tsv $OUTPUT_DIR
 
+
+python3 /mixcrep/tools/finalOutputConvert.py /$INPUT_DIR/sample.fasta /$OUTPUT_DIR/output.tsv
+
+cp finalMixcrep.tsv $OUTPUT_DIR
